@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Chat Box</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="icon" href="/static/image/favicon.png">
+		<link rel="stylesheet" href="/static/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/static/css/style.css">
+	</head>
+	<body>
+		<div class="row">
+			<div class="col-xs-offset-1 col-xs-10 col-sm-offset-3 col-sm-6">
+				<form method="post" class="form-horizontal register_form" role='form'>
+						<div class="form-group">
+							<label class="col-xs-2 col-sm-2 control-label">Name: </label>
+							<div class="col-xs-10 col-sm-10">
+								<input type="text" class="form-control">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-2 col-sm-2 control-label">Gender: </label>
+							<div class="col-xs-10 col-sm-10">
+								<select class="form-control">
+									<option value="M">Male</option>
+									<option value="F">Female</option>
+									<option value="U" selected="">Unknown</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-2 col-sm-2 control-label">Birthday: </label>
+							<div class="col-xs-10 col-sm-10">
+								<input type="date" class="form-control">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-2 col-sm-2 control-label">Country: </label>
+							<div class="col-xs-10 col-sm-10">
+								<select class="form-control">
+									<option value="CN">China</option>
+									<option value="US">United States</option>
+									<option value="ZZ" selected>Unspecified</option>
+								</select>
+							</div>
+						</div>
+
+					<div class="form-group">
+						<div class="col-xs-12 col-sm-offset-2 col-sm-8">
+							<button type="submit" class="btn btn-default btn-block">Register</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<script src="/static/js/jquery-2.0.3.min.js"></script>
+		<script src="/static/js/bootstrap.min.js"></script>
+	</body>
+</html>
