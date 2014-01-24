@@ -7,6 +7,7 @@ if __name__ == "__main__":
 		"debug": True,
 		"static_path": os.path.join(os.path.dirname(__file__), "static"),
 		"template_path": os.path.join(os.path.dirname(__file__), "template"),
+		"login_url": "/register",
 		"autoescape": None,
 		"cookie_secret": "yJPNtnEgCwVd9PwutDj8"
 	}

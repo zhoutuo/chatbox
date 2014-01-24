@@ -9,11 +9,9 @@ class BaseHandler(tornado.web.RequestHandler):
 
 
 class RoomHandler(BaseHandler):
+	@tornado.web.authenticated
 	def get(self):
-		if not self.get_current_user:
-			self.redirect("/register")
-		else:
-			pass
+		pass
 
 
 class RegisterHandler(BaseHandler):
