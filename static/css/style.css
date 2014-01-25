@@ -3,3 +3,9 @@
 	padding: 20px;
 	border: 1px solid black;
 }
+
+
+.chatbox textarea {
+	margin-top: 20px;
+	resize: none;
+}
