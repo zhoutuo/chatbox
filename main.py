@@ -14,6 +14,7 @@ if __name__ == "__main__":
 	app = tornado.web.Application([
 		(r'/', handlers.RoomHandler),
 		(r'/register', handlers.RegisterHandler),
+		(r'/chat', handlers.ChatHandler),
 	], **settings)
 	app.listen(8888)
 	# auto reload when files get updated
