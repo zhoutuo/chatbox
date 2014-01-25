@@ -74,7 +74,7 @@ class Message(object):
 		"""
 			Return a JSON string for this class
 		"""
-		return json.dumps(self, default=lambda o:o.__dict__)
+		return json.dumps(self, default=lambda o:dict(user_id=self.user_id, content=self.content, timestamp=self.timestamp))
 	
 
 class UserPool(object):
