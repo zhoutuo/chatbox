@@ -1,12 +1,10 @@
 import datetime
+import json
 import tornado.web
 import tornado.websocket
 from forms import RegistrationForm
-from models import User, Room
+from models import User, Room, Message
 from ext import TornadoMultiDict
-
-# this is a global variable
-room = Room()
 
 class BaseHandler(tornado.web.RequestHandler):
 	def get_current_user(self):
@@ -15,8 +13,8 @@ class BaseHandler(tornado.web.RequestHandler):
 			Or the id cannot be found inside the room.
 		"""
 		id = self.get_secure_cookie('user_id')
-		if id in room.users:
-			return room.users[id]
+		if id in ChatHandler.room.users:
+			return ChatHandler.room.users[id]
 
 
 class RoomHandler(BaseHandler):
@@ -37,7 +35,7 @@ class RegisterHandler(BaseHandler):
 			# generate new user in the memory from POST data
 			user = User(form.name.data, form.birthday.data, form.gender.data, form.country.data)
 			# save the user in the memory, supposingly save it in the db of sorts
-			room.users.join(user)
+			ChatHandler.room.users.join(user)
 			# set the client cookie, since no expires_days, it is a session cookie
 			self.set_secure_cookie('user_id', user.id, expires_days=None)
 			# redirect to room page
@@ -48,11 +46,27 @@ class RegisterHandler(BaseHandler):
 
 
 class ChatHandler(tornado.websocket.WebSocketHandler):
+	# class variable
+	room = Room()
+
+	def __init__(self, *args, **kwargs):
+		super(ChatHandler, self).__init__(*args, **kwargs)
+		self._user = None
+
 	def open(self):
-		pass
+		id = self.get_secure_cookie('user_id')
+		self._user = ChatHandler.room.users[id]
+		# passing web socket ref to user
+		self._user.ws = self
 
 	def on_message(self, message):
-		self.write_message(u"You said: " + message)
+		# receive front end messages
+		msg = json.loads(message)
+		ChatHandler.room.messages.enque(Message(self._user.id, msg['content'], msg['timestamp']));
 
 	def on_close(self):
-		print "WebSocket closed"
+		# once on leave, kick user out of the room
+		if self._user:
+			# for debug purpose, keep it first
+			pass
+			# room.users.leave(self._user)
