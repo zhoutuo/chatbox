@@ -1,4 +1,6 @@
 import uuid
+import json
+import weakref
 from Queue import Queue
 
 class User(object):
@@ -13,6 +15,8 @@ class User(object):
 		self._bday = bday
 		self._gender = gender
 		self._country = country
+		# web socket connection
+		self._ws = None
 
 	@property
 	def id(self):
@@ -33,6 +37,16 @@ class User(object):
 	@property
 	def country(self):
 	    return self._country
+
+	@property
+	def ws(self):
+		# since this is a weak ref, call()
+	    return self._ws()
+	@ws.setter
+	def ws(self, value):
+		# we use weakref in case of cyclic referencing
+	    self._ws = weakref.ref(value)
+	
 
 
 class Message(object):
@@ -55,6 +69,12 @@ class Message(object):
 	@property
 	def timestamp(self):
 	    return self._timestamp
+
+	def to_JSON(self):
+		"""
+			Return a JSON string for this class
+		"""
+		return json.dumps(self, default=lambda o:o.__dict__)
 	
 
 class UserPool(object):
@@ -70,6 +90,9 @@ class UserPool(object):
 	def __getitem__(self, user_id):
 		return self._pool[user_id]
 
+	def __iter__(self):
+		return self._pool.__iter__()
+
 	def join(self, user):
 		# this will overwrite the user with the same ID, since we are
 		# using UUID to generate unique ID, I do not think overwriting will happen
@@ -84,17 +107,18 @@ class MessageQueue(object):
 	"""
 		A class to manage messages from users in a queue ordered by the time received by the server.
 		Due to concurrency issue, the order is not gauranteed.
-		This implementation uses Queue class from Python standard lib which supports multi-threading already
+		callback here is the function to call when a message is added into queue
 	"""
-	def __init__(self):
+	def __init__(self, callback):
 		# infinite size
 		self._queue = Queue()
+		self._cb = callback
 
 	def enque(self, message):
 		self._queue.put(message)
+		self._cb(self.deque())
 
 	def deque(self):
-		# block is turned on by default, which means this will wait until the queue is not empty
 		return self._queue.get()
 
 
@@ -106,11 +130,13 @@ class Room(object):
 	"""
 	def __init__(self):
 		self.users = UserPool()
-		self.messages = MessageQueue()
+		self.messages = MessageQueue(self.push)
 
-	def push(self):
+	def push(self, new_msg):
 		"""
+			This is a callback function for message queue variable
 			Push new messages back to current users in this room if any message available.
 		"""
-		new_msg = self.messages.deque()
+		for user_id in self.users:
+			self.users[user_id].ws.write_message(new_msg.to_JSON())
 
