@@ -46,7 +46,17 @@ class User(object):
 	def ws(self, value):
 		# we use weakref in case of cyclic referencing
 	    self._ws = weakref.ref(value)
-	
+
+	def profile(self):
+		return {
+			"name": self.name,
+			"gender": self.gender,
+			# birthday is a date instance
+			"birthday": self.birthday.isoformat(),
+			"country": self.country		
+		}
+
+
 class MessageType(object):
 	"""
 		Acts as a enum type for Message class below
