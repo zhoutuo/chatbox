@@ -24,4 +24,12 @@ body {
 .chatbox #user_list {
 	overflow: auto;
 	height: 100%;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+.chatbox .user {
+	margin: 5px;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
 }

@@ -25,7 +25,9 @@ $(document).ready(function() {
 		} else if (msg.type == 1) {
 			// chat
 			// add message to output area
-			msg_output.val(msg_output.val() + "\n" + dateString + "\n" + msg.content);			
+			msg_output.val(msg_output.val() + 
+				"\n" + dateString + "\n" + 
+				users_pool[msg.user_id].name + ": " + msg.content);			
 		} else if (msg.type == 2) {
 			// leave
 			remove_user(msg.user_id);
