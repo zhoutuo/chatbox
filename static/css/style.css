@@ -1,11 +1,27 @@
+html {
+	height: 90%;
+}
+
+body {
+	height: 100%;
+}
+
 .register_form {
 	margin-top: 50px;
 	padding: 20px;
 	border: 1px solid black;
 }
 
+.chatbox {
+	margin-top: 20px;
+	height: 100%;
+}
 
 .chatbox textarea {
-	margin-top: 20px;
 	resize: none;
+}
+
+.chatbox #user_list {
+	overflow: auto;
+	height: 100%;
 }
