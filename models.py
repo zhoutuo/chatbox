@@ -77,30 +77,18 @@ class Message(object):
 		return json.dumps(self, default=lambda o:dict(user_id=self.user_id, content=self.content, timestamp=self.timestamp))
 	
 
-class UserPool(object):
+class UserPool(dict):
 	"""
 		A class to manage users in a room implemented using a dictionary.
 	"""
-	def __init__(self):
-		self._pool = {}
-
-	def __contains__(self, user_id):
-		return user_id in self._pool
-
-	def __getitem__(self, user_id):
-		return self._pool[user_id]
-
-	def __iter__(self):
-		return self._pool.__iter__()
-
 	def join(self, user):
 		# this will overwrite the user with the same ID, since we are
 		# using UUID to generate unique ID, I do not think overwriting will happen
-		self._pool[user.id] = user
+		self[user.id] = user
 
 	def leave(self, user):
 		# set default value to None in case the user is not inside the pool
-		self._pool.pop(user.id, None)
+		self.pop(user.id, None)
 
 	
 class MessageQueue(object):
