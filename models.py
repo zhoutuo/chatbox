@@ -47,16 +47,33 @@ class User(object):
 		# we use weakref in case of cyclic referencing
 	    self._ws = weakref.ref(value)
 	
+class MessageType(object):
+	"""
+		Acts as a enum type for Message class below
+	"""
+	Join, Chat, Leave, Exist = range(4)
 
 
 class Message(object):
 	"""
 		A class stands for the message sent by users in a chat room
 	"""
-	def __init__(self, user_id, content, timestamp):
+	def __init__(self, type, user_id, timestamp=None, content=None, target=None):
+		"""
+			Content could be None based on type of message.
+			0. Join: User profile: Name, Gender, Birthday, Country
+			1. Chat: Chat content
+			2. Leave: None
+			3. Exist: User profiles for all users specified
+			Target means to whom this message should be sent to,
+			If no specified, which is the general case, this message will send to all users
+			else, it will be only sent to these users decided by IDs.
+		"""
 		self._user_id = user_id
-		self._content = content
 		self._timestamp = timestamp
+		self._type = type
+		self._content = content
+		self._target = target
 
 	@property
 	def user_id(self):
@@ -70,11 +87,24 @@ class Message(object):
 	def timestamp(self):
 	    return self._timestamp
 
+	@property
+	def type(self):
+	    return self._type
+
+	@property
+	def target(self):
+	    return self._target
+
 	def to_JSON(self):
 		"""
 			Return a JSON string for this class
 		"""
-		return json.dumps(self, default=lambda o:dict(user_id=self.user_id, content=self.content, timestamp=self.timestamp))
+		return json.dumps(self, default=lambda o:{
+			"user_id": self.user_id,
+			"timestamp": self.timestamp,
+			"type": self.type,
+			"content": self.content
+		})
 	
 
 class UserPool(dict):
@@ -125,6 +155,6 @@ class Room(object):
 			This is a callback function for message queue variable
 			Push new messages back to current users in this room if any message available.
 		"""
-		for user_id in self.users:
+		target = new_msg.target or self.users
+		for user_id in target:
 			self.users[user_id].ws.write_message(new_msg.to_JSON())
-
