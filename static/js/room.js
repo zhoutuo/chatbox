@@ -1,5 +1,6 @@
 $(document).ready(function() {
-	var ws = new WebSocket("ws://localhost:8888/chat");
+
+	var ws = new WebSocket("ws://127.0.0.1:8888/chat");
 	var msg_input = $("#msg_input");
 	var msg_output = $("#msg_output");
 	ws.onopen = function() {
