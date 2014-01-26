@@ -7,7 +7,8 @@ from models import User, Room, Message
 from ext import TornadoMultiDict
 
 # this global variable will act as a pseudo-db
-registerUsers = {}
+registeredUsers = {}
+
 
 class BaseHandler(tornado.web.RequestHandler):
 	def get_current_user(self):
@@ -16,8 +17,8 @@ class BaseHandler(tornado.web.RequestHandler):
 			Or the id cannot be found inside the room.
 		"""
 		id = self.get_secure_cookie('user_id')
-		if id in registerUsers:
-			return registerUsers[id]
+		if id in registeredUsers:
+			return registeredUsers[id]
 
 
 class RoomHandler(BaseHandler):
@@ -38,7 +39,7 @@ class RegisterHandler(BaseHandler):
 			# generate new user in the memory from POST data
 			user = User(form.name.data, form.birthday.data, form.gender.data, form.country.data)
 			# save the user in the memory, supposingly save it in the db of sorts
-			registerUsers[user.id] = user
+			registeredUsers[user.id] = user
 			# set the client cookie, since no expires_days, it is a session cookie
 			self.set_secure_cookie('user_id', user.id, expires_days=30)
 			# redirect to room page
@@ -58,7 +59,7 @@ class ChatHandler(tornado.websocket.WebSocketHandler):
 
 	def open(self):
 		id = self.get_secure_cookie('user_id')
-		self._user = registerUsers[id]
+		self._user = registeredUsers[id]
 		# passing web socket ref to user
 		self._user.ws = self
 
