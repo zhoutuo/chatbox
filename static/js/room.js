@@ -28,6 +28,7 @@ $(document).ready(function() {
 			msg_output.val(msg_output.val() + "\n" + dateString + "\n" + msg.content);			
 		} else if (msg.type == 2) {
 			// leave
+			remove_user(msg.user_id);
 		} else {
 			// exist
 			for (var i = msg.content.length - 1; i >= 0; i--) {
@@ -65,10 +66,20 @@ $(document).ready(function() {
 			users_pool[id] = user;
 			// add UI
 			var div = $("<div/>");
+			div.attr("id", id);
 			div.addClass("user");
 			div.html(user.name);
 			user_list.append(div);
 
+		}
+	}
+
+	function remove_user(id) {
+		if (id in users_pool) {
+			// remove from pool
+			delete users_pool[id];
+			// remove from divs
+			user_list.children("#" + id).remove();
 		}
 	}
 });
