@@ -1,9 +1,9 @@
-import datetime
+import time
 import json
 import tornado.web
 import tornado.websocket
 from forms import RegistrationForm
-from models import User, Room, Message
+from models import User, Room, Message, MessageType
 from ext import TornadoMultiDict
 
 # this global variable will act as a pseudo-db
@@ -62,15 +62,26 @@ class ChatHandler(tornado.websocket.WebSocketHandler):
 		self._user = registeredUsers[id]
 		# passing web socket ref to user
 		self._user.ws = self
+		# generate a list excluding the user's id
+		ids = ChatHandler.room.users.keys()
+		# Add the new user into the room
+		ChatHandler.room.users.join(self._user)
+		# generate profiles based on ids
+		profiles = [ChatHandler.room.users[id].profile() for id in ids]
+		# send existing users to the new user
+		ChatHandler.room.messages.enque(Message(MessageType.Exist, ids, content=profiles, target=[self._user.id]))
+		# send join message to users about the joining
+		ChatHandler.room.messages.enque(Message(MessageType.Join, self._user.id, time.time(), self._user.profile()))
 
 	def on_message(self, message):
 		# receive front end messages
 		msg = json.loads(message)
-		ChatHandler.room.messages.enque(Message(self._user.id, msg['content'], msg['timestamp']));
+		ChatHandler.room.messages.enque(Message(MessageType.Chat, self._user.id, msg['timestamp'], msg['content']))
 
 	def on_close(self):
 		# once on leave, kick user out of the room
 		if self._user:
-			# for debug purpose, keep it first
-			pass
-			# room.users.leave(self._user)
+			# make it leave the room first
+			ChatHandler.room.users.leave(self._user)
+			# send the leave message
+			ChatHandler.room.messages.enque(Message(MessageType.Leave, self._user.id, time.time()))
