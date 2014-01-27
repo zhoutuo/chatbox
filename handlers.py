@@ -3,7 +3,7 @@ import json
 import tornado.web
 import tornado.websocket
 from forms import RegistrationForm
-from models import User, Room, Message, MessageType
+from models import User, Room, Message, MessageType, MessageWrapper, MessageWrapperType
 from ext import TornadoMultiDict
 
 # this global variable will act as a pseudo-db
@@ -66,17 +66,37 @@ class ChatHandler(tornado.websocket.WebSocketHandler):
 		ids = ChatHandler.room.users.keys()
 		# Add the new user into the room
 		ChatHandler.room.users.join(self._user)
-		# generate profiles based on ids
-		profiles = [ChatHandler.room.users[id].profile() for id in ids]
 		# send existing users to the new user
-		ChatHandler.room.messages.enque(Message(MessageType.Exist, ids, content=profiles, target=[self._user.id]))
+		ChatHandler.room.messages.enque(MessageWrapper(
+			MessageWrapperType.Exist, 
+			messages=[Message(
+				MessageType.User, 
+				id, 
+				time.time(), 
+				ChatHandler.room.users[id].profile()
+				) for id in ids], 
+			target=[self._user.id]
+			)
+		)
+		# send existing messaages to the new user
+		ChatHandler.room.messages.enque(MessageWrapper(MessageWrapperType.CacheChat, 
+			messages=[message for message in ChatHandler.room.messages.cache()], 
+			target=[self._user.id]
+			)
+		)
 		# send join message to users about the joining
-		ChatHandler.room.messages.enque(Message(MessageType.Join, self._user.id, time.time(), self._user.profile()))
+		ChatHandler.room.messages.enque(MessageWrapper(MessageWrapperType.Join, 
+			[Message(MessageType.User, self._user.id, time.time(), self._user.profile())]
+			)
+		)
 
 	def on_message(self, message):
 		# receive front end messages
 		msg = json.loads(message)
-		ChatHandler.room.messages.enque(Message(MessageType.Chat, self._user.id, msg['timestamp'], msg['content']))
+		ChatHandler.room.messages.enque(MessageWrapper(MessageWrapperType.NewChat, 
+			[Message(MessageType.Chat, self._user.id, msg['timestamp'], msg['content'])]
+			)
+		)
 
 	def on_close(self):
 		# once on leave, kick user out of the room
@@ -84,4 +104,5 @@ class ChatHandler(tornado.websocket.WebSocketHandler):
 			# make it leave the room first
 			ChatHandler.room.users.leave(self._user)
 			# send the leave message
-			ChatHandler.room.messages.enque(Message(MessageType.Leave, self._user.id, time.time()))
+			ChatHandler.room.messages.enque(MessageWrapper(MessageWrapperType.Leave, 
+				[Message(MessageType.User, self._user.id, time.time())]))
