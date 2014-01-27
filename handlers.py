@@ -3,7 +3,9 @@ import json
 import tornado.web
 import tornado.websocket
 from forms import RegistrationForm
-from models import User, Room, Message, MessageType, MessageWrapper, MessageWrapperType
+from models.user import User
+from models.room import Room
+from models.message import Message, MessageType, MessageWrapper, MessageWrapperType
 from ext import TornadoMultiDict
 
 # this global variable will act as a pseudo-db
