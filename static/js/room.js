@@ -60,15 +60,17 @@ $(document).ready(function() {
 	});
 
 	function add_message(id, timestamp, content) {
-		var date = new Date(timestamp);
-		// construct a date string to display
-		var dateString = "";
-		dateString += (date.getMonth() + 1) + "/" + date.getDate() + " ";
-		dateString += date.getHours() + ":" + date.getMinutes();
+		if (id in users_pool) {
+			var date = new Date(timestamp);
+			// construct a date string to display
+			var dateString = "";
+			dateString += (date.getMonth() + 1) + "/" + date.getDate() + " ";
+			dateString += date.getHours() + ":" + date.getMinutes();
 
-		msg_output.val(msg_output.val() +
-			"\n" + dateString + "\n" +
-			users_pool[id].name + ": " + content);
+			msg_output.val(msg_output.val() +
+				"\n" + dateString + "\n" +
+				users_pool[id].name + ": " + content);
+		}
 	}
 
 	var users_pool = {};
@@ -87,6 +89,7 @@ $(document).ready(function() {
 			user_list.append(div);
 
 		}
+		console.log(users_pool);		
 	}
 
 	function remove_user(id) {
@@ -96,5 +99,6 @@ $(document).ready(function() {
 			// remove from divs
 			user_list.children("#" + id).remove();
 		}
+		console.log(users_pool);
 	}
 });

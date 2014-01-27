@@ -80,15 +80,15 @@ class ChatHandler(tornado.websocket.WebSocketHandler):
 			target=[self._user.id]
 			)
 		)
+		# send join message to users about the joining
+		ChatHandler.room.messages.enque(MessageWrapper(MessageWrapperType.Join, 
+			[Message(MessageType.User, self._user.id, time.time(), self._user.profile())]
+			)
+		)
 		# send existing messaages to the new user
 		ChatHandler.room.messages.enque(MessageWrapper(MessageWrapperType.CacheChat, 
 			messages=[message for message in ChatHandler.room.messages.cache()], 
 			target=[self._user.id]
-			)
-		)
-		# send join message to users about the joining
-		ChatHandler.room.messages.enque(MessageWrapper(MessageWrapperType.Join, 
-			[Message(MessageType.User, self._user.id, time.time(), self._user.profile())]
 			)
 		)
 
