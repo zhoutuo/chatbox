@@ -11,30 +11,30 @@ $(document).ready(function() {
 	};
 
 	ws.onmessage = function(evt) {
-		var msg = JSON.parse(evt.data);
-		console.log(msg);
-		msg.date = new Date(msg.timestamp);
-		// construct a date string to display
-		var dateString = "";
-		dateString += (msg.date.getMonth() + 1) + "/" + msg.date.getDate() + " ";
-		dateString += msg.date.getHours() + ":" + msg.date.getMinutes();
+		var wrapper = JSON.parse(evt.data);
+		var msgs = wrapper.messages;
+		console.log(wrapper);
 		// type checking
-		if (msg.type == 0) {
+		if (wrapper.type == 0) {
 			// join
+			var msg = msgs[0];
 			add_user(msg.user_id, msg.content);
-		} else if (msg.type == 1) {
-			// chat
+		} else if (wrapper.type == 1) {
+			// leaves
 			// add message to output area
-			msg_output.val(msg_output.val() + 
-				"\n" + dateString + "\n" + 
-				users_pool[msg.user_id].name + ": " + msg.content);			
-		} else if (msg.type == 2) {
-			// leave
+			var msg = msgs[0];
 			remove_user(msg.user_id);
-		} else {
+		} else if (wrapper.type == 2) {
 			// exist
-			for (var i = msg.content.length - 1; i >= 0; i--) {
-				add_user(msg.user_id[i], msg.content[i]);
+			for (var i = msgs.length - 1; i >= 0; i--) {
+				add_user(msgs[i].user_id, msgs[i].content);
+			}
+		} else {
+			// new chat or cache chat
+			// 3 or 4
+			for (var i = 0; i < msgs.length; ++i) {
+				var msg = msgs[i];
+				add_message(msg.user_id, msg.timestamp, msg.content);
 			}
 		}
 	}
@@ -42,7 +42,7 @@ $(document).ready(function() {
 	msg_input.keypress(function(e) {
 		// 13 is the key code for return
 		if (e.which == 13) {
-			if(msg_input.val() === "") {
+			if (msg_input.val() === "") {
 				alert("No Empty Message");
 			} else {
 				// contrust a message object
@@ -59,7 +59,20 @@ $(document).ready(function() {
 		}
 	});
 
+	function add_message(id, timestamp, content) {
+		var date = new Date(timestamp);
+		// construct a date string to display
+		var dateString = "";
+		dateString += (date.getMonth() + 1) + "/" + date.getDate() + " ";
+		dateString += date.getHours() + ":" + date.getMinutes();
+
+		msg_output.val(msg_output.val() +
+			"\n" + dateString + "\n" +
+			users_pool[id].name + ": " + content);
+	}
+
 	var users_pool = {};
+
 	function add_user(id, user) {
 		if (id in users_pool) {
 			// do nothing if already exist
