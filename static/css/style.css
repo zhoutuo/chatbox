@@ -17,8 +17,14 @@ body {
 	height: 100%;
 }
 
-.chatbox textarea {
-	resize: none;
+.chatbox #chat_panel {
+	height: 100%;
+}
+
+.chatbox #msg_output {
+	height: 90%;
+	margin-bottom: 2%;
+	overflow: auto;
 }
 
 .chatbox #user_list {
@@ -32,4 +38,26 @@ body {
 	margin: 5px;
 	border-top: 1px solid black;
 	border-bottom: 1px solid black;
+}
+
+.chat_message {
+	border-bottom: 1px solid #ccc;
+}
+
+.chat_time {
+	font-weight: bold;
+	float: right;
+}
+
+.chat_name {
+	font-family: sans-serif;
+	float: left;
+	font-size: 16px;
+}
+
+.chat_content {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	clear: both;
+	overflow-wrap: break-word;
 }

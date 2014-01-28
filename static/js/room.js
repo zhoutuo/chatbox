@@ -67,9 +67,28 @@ $(document).ready(function() {
 			dateString += (date.getMonth() + 1) + "/" + date.getDate() + " ";
 			dateString += date.getHours() + ":" + date.getMinutes();
 
-			msg_output.val(msg_output.val() +
-				"\n" + dateString + "\n" +
-				users_pool[id].name + ": " + content);
+			var chat_div = $("<div/>");
+			chat_div.addClass("chat_message");
+			// 
+			var name_span = $("<span/>");
+			name_span.addClass("chat_name");
+			name_span.html(users_pool[id].name);
+			// 
+			var timestamp_span = $("<span/>");
+			timestamp_span.addClass("chat_time");
+			timestamp_span.html(dateString);			
+			// 
+			var content_div = $("<div/>");
+			content_div.addClass("chat_content");
+			content_div.html(content);
+
+			chat_div.append(name_span);
+			chat_div.append(timestamp_span);			
+			chat_div.append(content_div);
+
+			msg_output.append(chat_div);
+			// scroll to bottm
+			msg_output.scrollTop(msg_output[0].scrollHeight);
 		}
 	}
 
