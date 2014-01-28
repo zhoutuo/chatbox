@@ -7,7 +7,7 @@ $(document).ready(function() {
 	var msg_output = $("#msg_output");
 	ws.onopen = function() {
 		// after sucessfully connection, enable message input for users
-		msg_input.prop('disabled', false);
+		msg_input.attr('disabled', false);
 	};
 
 	ws.onmessage = function(evt) {
@@ -38,26 +38,26 @@ $(document).ready(function() {
 			}
 		}
 	}
+
 	// simulating summit event, 'enter' key press
-	msg_input.keypress(function(e) {
-		// 13 is the key code for return
-		if (e.which == 13) {
-			if (msg_input.val() === "") {
-				alert("No Empty Message");
-			} else {
-				// contrust a message object
-				var message = {};
-				message.content = msg_input.val();
-				message.timestamp = Date.now();
-				// send in a form of JSON
-				ws.send(JSON.stringify(message));
-				// clear the input
-				msg_input.val("");
-			}
-			// prevent form from submitting
-			e.preventDefault();
+	Mousetrap.bind("shift+enter", function(e) {
+		if (msg_input.html() === "") {
+			alert("No Empty Message");
+		} else {
+			// contrust a message object
+			var message = {};
+			message.content = msg_input.html();
+			message.timestamp = Date.now();
+			// send in a form of JSON
+			ws.send(JSON.stringify(message));
+			// clear the input
+			msg_input.html("");
 		}
+		// prevent form from submitting
+		return false;
 	});
+
+
 
 	function add_message(id, timestamp, content) {
 		if (id in users_pool) {

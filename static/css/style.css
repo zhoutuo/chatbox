@@ -21,8 +21,13 @@ body {
 	height: 100%;
 }
 
+.chatbox #msg_input {
+	height: 20%;
+	overflow: auto;
+}
+
 .chatbox #msg_output {
-	height: 90%;
+	height: 78%;
 	margin-bottom: 2%;
 	overflow: auto;
 }
