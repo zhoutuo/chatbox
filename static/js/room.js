@@ -61,11 +61,8 @@ $(document).ready(function() {
 
 	function add_message(id, timestamp, content) {
 		if (id in users_pool) {
-			var date = new Date(timestamp);
 			// construct a date string to display
-			var dateString = "";
-			dateString += (date.getMonth() + 1) + "/" + date.getDate() + " ";
-			dateString += date.getHours() + ":" + date.getMinutes();
+			var dateString = moment(timestamp).format("MM/DD HH:mm");
 
 			var chat_div = $("<div/>");
 			chat_div.addClass("chat_message");
