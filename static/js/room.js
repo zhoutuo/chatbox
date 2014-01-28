@@ -105,10 +105,25 @@ $(document).ready(function() {
 			div.attr("id", id);
 			div.addClass("user");
 			div.html(user.name);
-			user_list.append(div);
+			// add profile information to Bootstrap popover
+			div.attr("data-placement", "auto");
+			div.attr("data-toggle", "popover");
+			div.attr("data-original-title", "Profile");
+			div.attr("data-content", function() {
+				var gender = "Gender: " + user.gender + "<br>";
+				var birthday = "Birthday: " + user.birthday + "<br>";
+				var country = "Country: " + user.country;
+				return gender + birthday + country;
+			});
+			// enable popover feature
+			div.popover({
+				html: true,
+				trigger: "hover",
+				container: "body"				
+			});
 
+			user_list.append(div);
 		}
-		console.log(users_pool);		
 	}
 
 	function remove_user(id) {
@@ -118,6 +133,5 @@ $(document).ready(function() {
 			// remove from divs
 			user_list.children("#" + id).remove();
 		}
-		console.log(users_pool);
 	}
 });
