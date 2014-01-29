@@ -6,8 +6,16 @@ A chat web app based on Tornado Web Framework and WebSocket.
 
 Front End
 -------------
-1. jQuery
-2. Bootstrap
+1. jQuery: DOM manipulations.
+2. Bootstrap: UI.
+3. Mousetrap: Keyboard bindings.
+4. Moment.js: Time formating.
+
+
+Back End
+-------------
+1. Tornado 3.2
+2. WTForm 1.0.5: form validations.
 
 
 Install
