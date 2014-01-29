@@ -52,17 +52,35 @@ body {
 .chat_time {
 	font-weight: bold;
 	float: right;
+	width: 90px;
+}
+
+.chat_avatar {
+	width: 80px;
+	height: 70px;
+	margin-top: 5px;
+	display: inline-block;
+}
+
+.inner_avatar {
+	float: left;
+	position: relative;
+	left: 50%;
+}
+
+.inner_avatar img {
+    display: block;
+    position: relative;
+    left: -50%;
 }
 
 .chat_name {
 	font-family: sans-serif;
-	float: left;
 	font-size: 16px;
+	text-align: center;
 }
 
 .chat_content {
-	margin-top: 5px;
-	margin-bottom: 5px;
-	clear: both;
 	overflow-wrap: break-word;
+	display: inline-block;
 }

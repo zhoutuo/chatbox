@@ -60,6 +60,7 @@ $(document).ready(function() {
 
 
 	function add_message(id, timestamp, content) {
+		var gravatar_url = "http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y";
 		if (id in users_pool) {
 			// construct a date string to display
 			var dateString = moment(timestamp).format("MM/DD HH:mm");
@@ -67,20 +68,26 @@ $(document).ready(function() {
 			var chat_div = $("<div/>");
 			chat_div.addClass("chat_message");
 			// 
-			var name_span = $("<span/>");
-			name_span.addClass("chat_name");
-			name_span.html(users_pool[id].name);
+			var avatar_div = $("<div/>");
+			avatar_div.html("<div class='inner_avatar'><img src=" + gravatar_url + " width='40' height='40'></div>");
+			avatar_div.addClass("chat_avatar");
 			// 
-			var timestamp_span = $("<span/>");
-			timestamp_span.addClass("chat_time");
-			timestamp_span.html(dateString);			
+			var name_div = $("<div/>");
+			name_div.addClass("chat_name");
+			name_div.html(users_pool[id].name);
+			avatar_div.append(name_div);
+			// 
+			var timestamp_div = $("<div/>");
+			timestamp_div.addClass("chat_time");
+			timestamp_div.html(dateString);			
 			// 
 			var content_div = $("<div/>");
 			content_div.addClass("chat_content");
 			content_div.html(content);
 
-			chat_div.append(name_span);
-			chat_div.append(timestamp_span);			
+			chat_div.append(timestamp_div);	
+			// chat_div.append("<div style='clear: both;'></div>")		
+			chat_div.append(avatar_div);
 			chat_div.append(content_div);
 
 			msg_output.append(chat_div);
