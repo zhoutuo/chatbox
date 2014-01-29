@@ -31,4 +31,5 @@ Feature
 1. Authentication based on secure cookies.
 2. Message buffer for new users.
 3. Realtime user list in a chat room.
-4. There is no restriction on what language to chat in.
+4. Unicode.
+5. Avatar support for messages and user list.
