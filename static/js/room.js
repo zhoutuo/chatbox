@@ -119,6 +119,9 @@ $(document).ready(function() {
 				var country = "Country: " + user.country;
 				return gender + birthday + country;
 			});
+			// add avatar
+			var gravatar_url = "http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y";
+			div.prepend("<img src=" + gravatar_url + " width='20' height='20'>");
 			// enable popover feature
 			div.popover({
 				html: true,
